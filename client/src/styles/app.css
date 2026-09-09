@@ -1,0 +1,80 @@
+#cluster-map {
+    width: 100%;
+    height: 500px;
+}
+
+#map {
+    width: 100%;
+    height: 300px;
+}
+
+.campground-map {
+    width: 100%;
+    height: 500px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.campground-map--detail {
+    height: 300px;
+}
+
+.campground-card-image {
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    object-fit: cover;
+}
+
+.campground-card-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.campground-image-placeholder {
+    display: grid;
+    place-items: center;
+    min-height: 220px;
+    color: var(--bs-secondary-color);
+    background: var(--bs-secondary-bg);
+}
+
+.campground-carousel {
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--bs-secondary-bg);
+}
+
+.campground-carousel img {
+    height: 420px;
+    object-fit: cover;
+}
+
+.campground-edit-thumbnail {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.auth-page {
+    min-height: 100%;
+    padding-block: 1rem;
+}
+
+.auth-form-image {
+    height: 180px;
+    object-fit: cover;
+}
+
+@media (max-width: 767.98px) {
+    .campground-map {
+        height: 320px;
+    }
+
+    .campground-carousel img {
+        height: 280px;
+    }
+}
