@@ -1,6 +1,8 @@
 node_modules/
 .env
-client/.env
 dist/
 build/
 *.log
+
+# Frontend now lives in its own repo: D:\campify-client
+client/
