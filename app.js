@@ -21,6 +21,7 @@ const User = require('./models/user');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
+// adminRoutes required later after store is ready (see route mounting below)
 
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -70,9 +71,7 @@ const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
 // const secret = 'thisshouldbeabettersecret!';
 
 const store = MongoDBStore.create({
-// const store = new MongoDBStore({
     mongoUrl: dbUrl,
-    // mongooseConnection: db,
     secret,
     touchAfter: 24 * 60 * 60
 });
@@ -174,6 +173,9 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.use('/api', userRoutes);
+const adminRoutes = require('./routes/admin');
+adminRoutes.setSessionStore(store);  // inject store to avoid circular require
+app.use('/api/admin', adminRoutes.router);
 app.use('/api/campgrounds', campgroundRoutes);
 app.use('/api/campgrounds/:id/reviews', reviewRoutes);
 

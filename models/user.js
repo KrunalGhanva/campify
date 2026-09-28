@@ -5,10 +5,28 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const UserSchema = new Schema({
     email: {
         type: String,
-        required: true,
-        unique: true
+        unique: true,
+        sparse: true
+    },
+    mobile: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+    suspended: {
+        type: Boolean,
+        default: false
+    },
+    avatar: {
+        url: String,
+        filename: String
     }
-});
+}, { timestamps: true });
 
 UserSchema.plugin(passportLocalMongoose);
 

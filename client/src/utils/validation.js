@@ -25,20 +25,37 @@ export const validateReview = ({ rating, body }) => {
     return errors;
 };
 
-export const validateLogin = ({ username, password }) => {
+export const validateLogin = ({ loginIdentifier, password }) => {
     const errors = {};
-    if (required(username)) errors.username = 'Enter your username.';
+    if (required(loginIdentifier)) errors.loginIdentifier = 'Enter your username, email, or mobile.';
     if (required(password)) errors.password = 'Enter your password.';
     return errors;
 };
 
-export const validateRegistration = ({ email, username, password }) => {
-    const errors = validateLogin({ username, password });
+export const validateRegistration = ({ email, mobile, username, password }) => {
+    const errors = {};
+    if (required(username)) errors.username = 'Enter your username.';
+    if (required(password)) errors.password = 'Enter your password.';
+    
     if (username.trim().length > 0 && (username.trim().length < 3 || username.trim().length > 30)) {
         errors.username = 'Username must be 3–30 characters.';
     }
-    if (required(email)) errors.email = 'Enter your email address.';
-    else if (!/^\S+@\S+\.\S+$/.test(email.trim())) errors.email = 'Enter a valid email address.';
+    
+    const hasEmail = !required(email);
+    const hasMobile = !required(mobile);
+    
+    if (!hasEmail && !hasMobile) {
+        errors.email = 'Enter an email address or mobile number.';
+        errors.mobile = 'Enter an email address or mobile number.';
+    }
+    
+    if (hasEmail && !/^\S+@\S+\.\S+$/.test(email.trim())) {
+        errors.email = 'Enter a valid email address.';
+    }
+    if (hasMobile && !/^[0-9]{10,15}$/.test(mobile.trim())) {
+        errors.mobile = 'Enter a valid mobile number (10-15 digits).';
+    }
+    
     if (password.length > 0 && (password.length < 6 || password.length > 128)) {
         errors.password = 'Password must be 6–128 characters.';
     }

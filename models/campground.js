@@ -45,10 +45,11 @@ const CampgroundSchema = new Schema({
 }, opts);
 
 CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
+    const desc = this.description ? this.description.substring(0, 20) + '...' : '';
     return `
         <strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
-        <p>${this.description.substring(0, 20)}...</p>
-    `
+        <p>${desc}</p>
+    `;
 });
 
 // Assuming CampgroundSchema is a mongoose schema, this line sets up a post middleware

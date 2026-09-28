@@ -1,12 +1,12 @@
 import { useState, useContext } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { FlashContext } from '../context/FlashContext';
 import AuthForm from '../components/AuthForm';
 import { validateLogin } from '../utils/validation';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
+    const [loginIdentifier, setLoginIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
@@ -14,16 +14,19 @@ const Login = () => {
     const { showFlash } = useContext(FlashContext);
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchParams] = useSearchParams();
+
+    const isSuspended = searchParams.get('reason') === 'suspended';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const nextErrors = validateLogin({ username, password });
+        const nextErrors = validateLogin({ loginIdentifier, password });
         setErrors(nextErrors);
         if (Object.keys(nextErrors).length) return;
 
         setSubmitting(true);
         try {
-            await login(username, password);
+            await login(loginIdentifier, password);
             showFlash('success', 'Welcome back!');
             const redirectTo = location.state?.from?.pathname || '/campgrounds';
             navigate(redirectTo, { replace: true });
@@ -42,14 +45,23 @@ const Login = () => {
             linkText="Register here"
             submitting={submitting}
         >
+            {isSuspended && (
+                <div className="alert alert-danger d-flex align-items-start gap-2 mb-3 py-2" role="alert">
+                    <span style={{ fontSize: '1.1rem' }}>🚫</span>
+                    <div>
+                        <strong>Account suspended.</strong><br />
+                        <small>Your account has been suspended by an administrator. Contact support if you believe this is a mistake.</small>
+                    </div>
+                </div>
+            )}
             <div className="mb-3">
-                <label className="form-label" htmlFor="username">Username</label>
-                <input className={`form-control ${errors.username ? 'is-invalid' : ''}`} type="text" id="username" name="username" autoFocus
-                    value={username} onChange={e => {
-                        setUsername(e.target.value);
-                        setErrors(validateLogin({ username: e.target.value, password }));
+                <label className="form-label" htmlFor="loginIdentifier">Username, Email, or Mobile</label>
+                <input className={`form-control ${errors.loginIdentifier ? 'is-invalid' : ''}`} type="text" id="loginIdentifier" name="loginIdentifier" autoFocus
+                    value={loginIdentifier} onChange={e => {
+                        setLoginIdentifier(e.target.value);
+                        setErrors(validateLogin({ loginIdentifier: e.target.value, password }));
                     }} />
-                {errors.username && <div className="invalid-feedback">{errors.username}</div>}
+                {errors.loginIdentifier && <div className="invalid-feedback">{errors.loginIdentifier}</div>}
             </div>
 
             <div className="mb-3">
@@ -57,7 +69,7 @@ const Login = () => {
                 <input className={`form-control ${errors.password ? 'is-invalid' : ''}`} type="password" id="password" name="password"
                     value={password} onChange={e => {
                         setPassword(e.target.value);
-                        setErrors(validateLogin({ username, password: e.target.value }));
+                        setErrors(validateLogin({ loginIdentifier, password: e.target.value }));
                     }} />
                 {errors.password && <div className="invalid-feedback">{errors.password}</div>}
             </div>

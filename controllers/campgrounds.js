@@ -36,10 +36,10 @@ module.exports.showCampground = async (req, res) => {
     const campground = await Campground.findById(req.params.id).populate({
         path: 'reviews',
         populate: {
-            path: 'author'
+            path: 'author',
+            select: 'username avatar'
         }
     }).populate('author');
-    // console.log(campground);
     if (!campground) {
         return res.status(404).json({ error: 'Cannot find that campground!' });
     }

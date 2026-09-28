@@ -22,14 +22,21 @@ export const AuthProvider = ({ children }) => {
         checkAuth();
     }, []);
 
-    const login = async (username, password) => {
-        const data = await apiLogin(username, password);
+    // Listen for the suspension event fired by the Axios interceptor
+    useEffect(() => {
+        const handleSuspended = () => setCurrentUser(null);
+        window.addEventListener('campify:suspended', handleSuspended);
+        return () => window.removeEventListener('campify:suspended', handleSuspended);
+    }, []);
+
+    const login = async (loginIdentifier, password) => {
+        const data = await apiLogin(loginIdentifier, password);
         setCurrentUser(data.user);
         return data;
     };
 
-    const register = async (email, username, password) => {
-        const data = await apiRegister(email, username, password);
+    const register = async (email, mobile, username, password) => {
+        const data = await apiRegister(email, mobile, username, password);
         setCurrentUser(data.user);
         return data;
     };
@@ -42,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     if (loading) return <LoadingSpinner label="Checking your session..." fullPage />;
 
     return (
-        <AuthContext.Provider value={{ currentUser, login, register, logout }}>
+        <AuthContext.Provider value={{ currentUser, setCurrentUser, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );
