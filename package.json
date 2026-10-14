@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "seed:images": "node seeds/real/fetch-images.js",
+    "seed:real": "node seeds/real/seed.js"
   },
   "keywords": [],
   "author": "",
